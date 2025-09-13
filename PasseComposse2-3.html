@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica Passé Composé (2º y 3º Grupo)</title>
+<style>
+  body {font-family: Arial, sans-serif; margin:20px; background:#f9f9f9;}
+  .question {margin-bottom:15px; padding:10px; background:white; border-radius:8px;}
+  .feedback {margin-top:5px; font-size:0.9em; padding:5px; border-radius:5px;}
+  .correct {background:#d4edda; color:#155724;}
+  .incorrect {background:#f8d7da; color:#721c24;}
+  button {margin:5px;}
+  #score {font-weight:bold;}
+  .instructions {
+    background:#e8f4ff; padding:15px; border-radius:8px; margin-bottom:15px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Práctica Passé Composé — Verbos 2º y 3º Grupo</h1>
+<div class="instructions">
+  <p><strong>Instrucciones:</strong></p>
+  <ul>
+    <li>Responde en passé composé la forma indicada del verbo del 2º o 3º grupo.</li>
+    <li>Completa cada espacio con la conjugación correcta (usa acentos y el auxiliar adecuado avoir/être cuando corresponda).</li>
+    <li>Hay 30 preguntas, se muestran 10 por página. Usa “Siguiente” y “Anterior” para navegar.</li>
+    <li>Puedes revisar resultados en cualquier momento con “Ver resultados actuales”.</li>
+    <li>El progreso se guarda automáticamente (aunque cierres el navegador). Puedes reiniciar con “Reiniciar práctica”.</li>
+    <li>Puedes volver atrás y corregir respuestas antes de terminar.</li>
+  </ul>
+</div>
+
+<div id="quiz"></div>
+
+<div>
+  <button id="prevBtn">Anterior</button>
+  <button id="nextBtn">Siguiente</button>
+  <button id="checkBtn">Ver resultados actuales</button>
+  <button id="refreshBtn">Reiniciar práctica</button>
+</div>
+
+<p id="score"></p>
+
+<script>
+// ==================== CONFIGURACIÓN ====================
+const questions = [
+  // 1-10
+  {q:"Nous (finir) ... notre travail", a:"avons fini"},
+  {q:"Vous (choisir) ... le bon livre", a:"avez choisi"},
+  {q:"Ils (réussir) ... à l'examen", a:"ont réussi"},
+  {q:"Elle (grandir) ... beaucoup", a:"a grandi"},
+  {q:"Tu (réfléchir) ... avant de parler", a:"as réfléchi"},
+  {q:"Je (maigrir) ... cet été", a:"ai maigri"},
+  {q:"Ils (partir) ... tôt", a:"sont partis"},
+  {q:"Nous (sortir) ... du cinéma", a:"sommes sortis"},
+  {q:"Elle (venir) ... avec nous", a:"est venue"},
+  {q:"Vous (descendre) ... trop vite", a:"êtes descendus"},
+  // 11-20
+  {q:"Il (boire) ... un café", a:"a bu"},
+  {q:"Nous (prendre) ... le métro", a:"avons pris"},
+  {q:"Ils (lire) ... le livre", a:"ont lu"},
+  {q:"Vous (écrire) ... une lettre", a:"avez écrit"},
+  {q:"Elle (dire) ... la vérité", a:"a dit"},
+  {q:"Tu (mettre) ... la table", a:"as mis"},
+  {q:"Je (vivre) ... en France", a:"ai vécu"},
+  {q:"Nous (connaître) ... cette personne", a:"avons connu"},
+  {q:"Ils (courir) ... au parc", a:"ont couru"},
+  {q:"Vous (ouvrir) ... la porte", a:"avez ouvert"},
+  // 21-30
+  {q:"Elle (mourir) ... l'année dernière", a:"est morte"},
+  {q:"Ils (naître) ... en mai", a:"sont nés"},
+  {q:"Nous (recevoir) ... une lettre", a:"avons reçu"},
+  {q:"Tu (apprendre) ... le français", a:"as appris"},
+  {q:"Je (comprendre) ... la leçon", a:"ai compris"},
+  {q:"Vous (offrir) ... un cadeau", a:"avez offert"},
+  {q:"Ils (souffrir) ... longtemps", a:"ont souffert"},
+  {q:"Nous (tenir) ... nos promesses", a:"avons tenu"},
+  {q:"Elle (devenir) ... médecin", a:"est devenue"},
+  {q:"Je (revenir) ... hier", a:"suis revenu"}
+];
+
+const questionsPerPage = 10;
+let currentPage = parseInt(localStorage.getItem('pc_currentPage') || '0');
+let answers = JSON.parse(localStorage.getItem('pc_answers') || '[]');
+
+if (answers.length !== questions.length) {
+  answers = Array(questions.length).fill('');
+}
+
+// ==================== FUNCIONES ====================
+function renderPage() {
+  const quizDiv = document.getElementById('quiz');
+  quizDiv.innerHTML = '';
+  const startIndex = currentPage * questionsPerPage;
+  const endIndex = Math.min(startIndex + questionsPerPage, questions.length);
+
+  for (let i=startIndex; i<endIndex; i++) {
+    const qDiv = document.createElement('div');
+    qDiv.className='question';
+    qDiv.innerHTML = `
+      <p><strong>Pregunta ${i+1}:</strong> ${questions[i].q}</p>
+      <input type="text" data-index="${i}" value="${answers[i]}">
+      <div class="feedback" id="feedback-${i}"></div>
+    `;
+    quizDiv.appendChild(qDiv);
+  }
+  saveProgress();
+}
+
+function saveProgress(){
+  localStorage.setItem('pc_answers', JSON.stringify(answers));
+  localStorage.setItem('pc_currentPage', currentPage);
+}
+
+function checkScore(){
+  let correct=0;
+  for (let i=0; i<questions.length; i++){
+    const user=answers[i].trim().toLowerCase();
+    const good=questions[i].a.toLowerCase();
+    const feedbackDiv=document.getElementById('feedback-'+i);
+    if(!feedbackDiv) continue; // sólo en la página actual
+    if(user===good){
+      feedbackDiv.textContent='✅ Correcto';
+      feedbackDiv.className='feedback correct';
+      correct++;
+    } else if(user===''){
+      feedbackDiv.textContent='⚠️ Sin respuesta. Correcta: '+questions[i].a;
+      feedbackDiv.className='feedback incorrect';
+    } else {
+      feedbackDiv.textContent='❌ Incorrecto. Tu respuesta: '+answers[i]+' | Correcta: '+questions[i].a;
+      feedbackDiv.className='feedback incorrect';
+    }
+  }
+  const nota=(correct/questions.length*10).toFixed(2);
+  document.getElementById('score').innerHTML=`Aciertos en esta página: ${correct}/${questions.length} — Nota aprox: ${nota}/10`;
+}
+
+// ==================== EVENTOS ====================
+document.getElementById('quiz').addEventListener('input', (e)=>{
+  if(e.target.tagName==='INPUT'){
+    const idx=parseInt(e.target.dataset.index);
+    answers[idx]=e.target.value;
+    saveProgress();
+  }
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if((currentPage+1)*questionsPerPage<questions.length){
+    currentPage++;
+    renderPage();
+  }
+});
+
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  if(currentPage>0){
+    currentPage--;
+    renderPage();
+  }
+});
+
+document.getElementById('checkBtn').addEventListener('click', checkScore);
+
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  if(confirm("¿Seguro que deseas reiniciar la práctica?")){
+    localStorage.removeItem('pc_answers');
+    localStorage.removeItem('pc_currentPage');
+    answers=Array(questions.length).fill('');
+    currentPage=0;
+    renderPage();
+    document.getElementById('score').innerHTML='';
+  }
+});
+
+// ==================== INICIO ====================
+renderPage();
+</script>
+</body>
+</html>

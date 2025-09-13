@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica Imperfecto (Français)</title>
+<style>
+  body {font-family: Arial, sans-serif; margin:20px; background:#f9f9f9;}
+  .question {margin-bottom:15px; padding:10px; background:white; border-radius:8px;}
+  .feedback {margin-top:5px; font-size:0.9em; padding:5px; border-radius:5px;}
+  .correct {background:#d4edda; color:#155724;}
+  .incorrect {background:#f8d7da; color:#721c24;}
+  button {margin:5px;}
+  #score {font-weight:bold;}
+  .instructions {
+    background:#e8f4ff; padding:15px; border-radius:8px; margin-bottom:15px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Práctica Imperfecto — Verbos Franceses</h1>
+<div class="instructions">
+  <p><strong>Instrucciones:</strong></p>
+  <ul>
+    <li>Responde en <strong>imparfait</strong> la forma indicada del verbo.</li>
+    <li>Completa cada espacio con la conjugación correcta (usa acentos cuando corresponda).</li>
+    <li>Hay 30 preguntas, se muestran 10 por página. Usa “Siguiente” y “Anterior” para navegar.</li>
+    <li>Puedes revisar resultados en cualquier momento con “Ver resultados actuales”.</li>
+    <li>El progreso se guarda automáticamente (aunque cierres el navegador). Puedes reiniciar con “Reiniciar práctica”.</li>
+    <li>Puedes volver atrás y corregir respuestas antes de terminar.</li>
+  </ul>
+</div>
+
+<div id="quiz"></div>
+
+<div>
+  <button id="prevBtn">Anterior</button>
+  <button id="nextBtn">Siguiente</button>
+  <button id="checkBtn">Ver resultados actuales</button>
+  <button id="refreshBtn">Reiniciar práctica</button>
+</div>
+
+<p id="score"></p>
+
+<script>
+// ==================== CONFIGURACIÓN ====================
+const questions = [
+  // 1-10
+  {q:"Je (parler) ... avec ma mère", a:"parlais"},
+  {q:"Tu (finir) ... tes devoirs", a:"finissais"},
+  {q:"Il (être) ... malade", a:"était"},
+  {q:"Nous (manger) ... ensemble", a:"mangions"},
+  {q:"Vous (avoir) ... beaucoup de travail", a:"aviez"},
+  {q:"Ils (faire) ... du sport chaque jour", a:"faisaient"},
+  {q:"Je (aller) ... à l'école en bus", a:"allais"},
+  {q:"Tu (boire) ... du lait tous les matins", a:"buvais"},
+  {q:"Elle (lire) ... un livre", a:"lisait"},
+  {q:"Nous (prendre) ... le train", a:"prenions"},
+  // 11-20
+  {q:"Vous (dire) ... la vérité", a:"disiez"},
+  {q:"Ils (vivre) ... à Paris", a:"vivaient"},
+  {q:"Je (jouer) ... au tennis", a:"jouais"},
+  {q:"Tu (travailler) ... à la bibliothèque", a:"travaillais"},
+  {q:"Il (pleuvoir) ... beaucoup", a:"pleuvait"},
+  {q:"Nous (attendre) ... le bus", a:"attendions"},
+  {q:"Vous (choisir) ... les meilleurs plats", a:"choisissiez"},
+  {q:"Ils (venir) ... souvent chez nous", a:"venaient"},
+  {q:"Je (mettre) ... la table chaque soir", a:"mettais"},
+  {q:"Tu (sortir) ... le soir", a:"sortais"},
+  // 21-30
+  {q:"Elle (pouvoir) ... chanter bien", a:"pouvait"},
+  {q:"Nous (vouloir) ... partir tôt", a:"voulions"},
+  {q:"Vous (devoir) ... étudier plus", a:"deviez"},
+  {q:"Ils (connaître) ... ce professeur", a:"connaissaient"},
+  {q:"Je (croire) ... en mes amis", a:"croyais"},
+  {q:"Tu (savoir) ... la réponse", a:"savais"},
+  {q:"Il (recevoir) ... beaucoup de lettres", a:"recevait"},
+  {q:"Nous (ouvrir) ... les fenêtres", a:"ouvrions"},
+  {q:"Vous (partir) ... en vacances chaque été", a:"partiez"},
+  {q:"Ils (dormir) ... dans la chambre", a:"dormaient"}
+];
+
+const questionsPerPage = 10;
+let currentPage = parseInt(localStorage.getItem('imp_currentPage') || '0');
+let answers = JSON.parse(localStorage.getItem('imp_answers') || '[]');
+
+if (answers.length !== questions.length) {
+  answers = Array(questions.length).fill('');
+}
+
+// ==================== FUNCIONES ====================
+function renderPage() {
+  const quizDiv = document.getElementById('quiz');
+  quizDiv.innerHTML = '';
+  const startIndex = currentPage * questionsPerPage;
+  const endIndex = Math.min(startIndex + questionsPerPage, questions.length);
+
+  for (let i=startIndex; i<endIndex; i++) {
+    const qDiv = document.createElement('div');
+    qDiv.className='question';
+    qDiv.innerHTML = `
+      <p><strong>Pregunta ${i+1}:</strong> ${questions[i].q}</p>
+      <input type="text" data-index="${i}" value="${answers[i]}">
+      <div class="feedback" id="feedback-${i}"></div>
+    `;
+    quizDiv.appendChild(qDiv);
+  }
+  saveProgress();
+}
+
+function saveProgress(){
+  localStorage.setItem('imp_answers', JSON.stringify(answers));
+  localStorage.setItem('imp_currentPage', currentPage);
+}
+
+function checkScore(){
+  let correct=0;
+  for (let i=0; i<questions.length; i++){
+    const user=answers[i].trim().toLowerCase();
+    const good=questions[i].a.toLowerCase();
+    const feedbackDiv=document.getElementById('feedback-'+i);
+    if(!feedbackDiv) continue; // sólo en la página actual
+    if(user===good){
+      feedbackDiv.textContent='✅ Correcto';
+      feedbackDiv.className='feedback correct';
+      correct++;
+    } else if(user===''){
+      feedbackDiv.textContent='⚠️ Sin respuesta. Correcta: '+questions[i].a;
+      feedbackDiv.className='feedback incorrect';
+    } else {
+      feedbackDiv.textContent='❌ Incorrecto. Tu respuesta: '+answers[i]+' | Correcta: '+questions[i].a;
+      feedbackDiv.className='feedback incorrect';
+    }
+  }
+  const nota=(correct/questions.length*10).toFixed(2);
+  document.getElementById('score').innerHTML=`Aciertos en esta página: ${correct}/${questions.length} — Nota aprox: ${nota}/10`;
+}
+
+// ==================== EVENTOS ====================
+document.getElementById('quiz').addEventListener('input', (e)=>{
+  if(e.target.tagName==='INPUT'){
+    const idx=parseInt(e.target.dataset.index);
+    answers[idx]=e.target.value;
+    saveProgress();
+  }
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if((currentPage+1)*questionsPerPage<questions.length){
+    currentPage++;
+    renderPage();
+  }
+});
+
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  if(currentPage>0){
+    currentPage--;
+    renderPage();
+  }
+});
+
+document.getElementById('checkBtn').addEventListener('click', checkScore);
+
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  if(confirm("¿Seguro que deseas reiniciar la práctica?")){
+    localStorage.removeItem('imp_answers');
+    localStorage.removeItem('imp_currentPage');
+    answers=Array(questions.length).fill('');
+    currentPage=0;
+    renderPage();
+    document.getElementById('score').innerHTML='';
+  }
+});
+
+// ==================== INICIO ====================
+renderPage();
+</script>
+</body>
+</html>
