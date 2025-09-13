@@ -1,345 +1,157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Práctica: Imperfecto (Imparfait) - Francés</title>
-    <style>
-        body {
-            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #f7fbff;
-            color: #0b2135
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            margin-bottom: 0.2rem
-        }
-
-        p.lead {
-            margin-top: 0;
-            color: #234
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 18px;
-            box-shadow: 0 6px 18px rgba(10, 30, 60, 0.06);
-            margin: 16px 0
-        }
-
-        .question {
-            margin: 12px 0
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px
-        }
-
-        input[type="text"] {
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #cfe3ff;
-            width: 100%;
-            box-sizing: border-box
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap
-        }
-
-        button {
-            background: #0b66ff;
-            color: white;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
-            cursor: pointer
-        }
-
-        button.secondary {
-            background: #e6f0ff;
-            color: #0b66ff
-        }
-
-        .result {
-            padding: 12px;
-            margin-top: 12px;
-            border-radius: 10px
-        }
-
-        .correct {
-            background: #e6ffef;
-            border: 1px solid #7ce3a6
-        }
-
-        .wrong {
-            background: #fff1f0;
-            border: 1px solid #ffa8a8
-        }
-
-        .answers {
-            margin-top: 12px
-        }
-
-        .small {
-            font-size: 0.9rem;
-            color: #345
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica Imperfecto Francés - 30 Preguntas</title>
+<style>
+  body {font-family: Arial, sans-serif; margin:20px; background:#f9f9f9;}
+  .question {margin-bottom:15px; padding:10px; background:white; border-radius:8px;}
+  .hidden {display:none;}
+  button {margin:5px;}
+  #score {font-weight:bold;}
+</style>
 </head>
-
 <body>
-    <h1>Práctica: imperfecto (imparfait) — francés</h1>
-    <p class="lead">Conjuga cada verbo en <strong>imparfait</strong> según el pronombre entre paréntesis. Escribe la
-        forma sin el pronombre (por ejemplo: <em>finissais</em>, <em>allions</em>). Al finalizar, presiona "Corregir"
-        para ver las respuestas y tu nota sobre 10.</p>
 
-    <div class="card" id="quiz">
-        <form id="quizForm">
+<h1>Práctica Imperfecto Francés</h1>
+<div id="quiz"></div>
 
-            <ol>
-                <li class="question">
-                    <label>1. Je (finir)</label>
-                    <input type="text" name="q1" autocomplete="off">
-                </li>
+<div>
+  <button id="prevBtn">Anterior</button>
+  <button id="nextBtn">Siguiente</button>
+  <button id="checkBtn">Ver resultados actuales</button>
+  <button id="refreshBtn">Reiniciar práctica</button>
+</div>
 
-                <li class="question">
-                    <label>2. Tu (être)</label>
-                    <input type="text" name="q2" autocomplete="off">
-                </li>
+<p id="score"></p>
 
-                <li class="question">
-                    <label>3. Il/Elle (avoir)</label>
-                    <input type="text" name="q3" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>4. Nous (parler)</label>
-                    <input type="text" name="q4" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>5. Vous (aller)</label>
-                    <input type="text" name="q5" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>6. Ils/Elles (vendre)</label>
-                    <input type="text" name="q6" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>7. Nous (faire)</label>
-                    <input type="text" name="q7" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>8. Je (prendre)</label>
-                    <input type="text" name="q8" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>9. Elle (pouvoir)</label>
-                    <input type="text" name="q9" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>10. Vous (savoir)</label>
-                    <input type="text" name="q10" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>11. Nous (voir)</label>
-                    <input type="text" name="q11" autocomplete="off">
-                </li>
-
-                <li class="question">
-                    <label>12. Ils (sortir)</label>
-                    <input type="text" name="q12" autocomplete="off">
-                </li>
-            </ol>
-            <!-- Pega esto después de la pregunta 12 -->
-            <li class="question"><label>13. Tu (dire)</label><input type="text" name="q13" autocomplete="off"></li>
-            <li class="question"><label>14. Il (venir)</label><input type="text" name="q14" autocomplete="off"></li>
-            <li class="question"><label>15. Nous (lire)</label><input type="text" name="q15" autocomplete="off"></li>
-            <li class="question"><label>16. Vous (écrire)</label><input type="text" name="q16" autocomplete="off"></li>
-            <li class="question"><label>17. Elles (boire)</label><input type="text" name="q17" autocomplete="off"></li>
-            <li class="question"><label>18. Je (ouvrir)</label><input type="text" name="q18" autocomplete="off"></li>
-            <li class="question"><label>19. Tu (connaître)</label><input type="text" name="q19" autocomplete="off"></li>
-            <li class="question"><label>20. Il (vouloir)</label><input type="text" name="q20" autocomplete="off"></li>
-            <li class="question"><label>21. Nous (mettre)</label><input type="text" name="q21" autocomplete="off"></li>
-            <li class="question"><label>22. Vous (partir)</label><input type="text" name="q22" autocomplete="off"></li>
-            <li class="question"><label>23. Ils (courir)</label><input type="text" name="q23" autocomplete="off"></li>
-            <li class="question"><label>24. Je (envoyer)</label><input type="text" name="q24" autocomplete="off"></li>
-            <li class="question"><label>25. Tu (recevoir)</label><input type="text" name="q25" autocomplete="off"></li>
-            <li class="question"><label>26. Il (falloir) — impersonal (il …)</label><input type="text" name="q26"
-                    autocomplete="off"></li>
-            <li class="question"><label>27. Nous (vivre)</label><input type="text" name="q27" autocomplete="off"></li>
-            <li class="question"><label>28. Vous (tenir)</label><input type="text" name="q28" autocomplete="off"></li>
-            <li class="question"><label>29. Elles (mourir)</label><input type="text" name="q29" autocomplete="off"></li>
-            <li class="question"><label>30. Je (rire)</label><input type="text" name="q30" autocomplete="off"></li>
-            <li class="question"><label>31. Tu (sourire)</label><input type="text" name="q31" autocomplete="off"></li>
-            <li class="question"><label>32. Il (croire)</label><input type="text" name="q32" autocomplete="off"></li>
-            <li class="question"><label>33. Nous (offrir)</label><input type="text" name="q33" autocomplete="off"></li>
-            <li class="question"><label>34. Vous (descendre)</label><input type="text" name="q34" autocomplete="off">
-            </li>
-            <li class="question"><label>35. Elles (naître)</label><input type="text" name="q35" autocomplete="off"></li>
-            <li class="question"><label>36. Je (battre)</label><input type="text" name="q36" autocomplete="off"></li>
-            <li class="question"><label>37. Tu (résoudre)</label><input type="text" name="q37" autocomplete="off"></li>
-            <li class="question"><label>38. Il (apprendre)</label><input type="text" name="q38" autocomplete="off"></li>
-            <li class="question"><label>39. Nous (coudre)</label><input type="text" name="q39" autocomplete="off"></li>
-            <li class="question"><label>40. Vous (plaire)</label><input type="text" name="q40" autocomplete="off"></li>
-            <li class="question"><label>41. Ils (craindre)</label><input type="text" name="q41" autocomplete="off"></li>
-            <li class="question"><label>42. Je (aller)</label><input type="text" name="q42" autocomplete="off"></li>
-
-
-            <div class="controls">
-                <button type="button" id="checkBtn">Corregir</button>
-                <button type="button" id="showAnswers" class="secondary">Mostrar respuestas</button>
-                <button type="button" id="resetBtn" class="secondary">Borrar</button>
-            </div>
-
-        </form>
-
-        <div id="feedback" class="result" style="display:none"></div>
-
-        <div id="answerList" class="answers" style="display:none"></div>
-    </div>
-
-    <script>
-        // Respuestas esperadas (formas de imparfait sin pronombre). Normalizadas sin acentos y en minúsculas.
-const answers = [
-  'finissais',  //1
-  'étais',      //2
-  'avait',      //3
-  'parlions',   //4
-  'alliez',     //5
-  'vendaient',  //6
-  'faisions',   //7
-  'prenais',    //8
-  'pouvait',    //9
-  'saviez',     //10
-  'voyions',    //11
-  'sortaient',  //12
-  'disais',     //13 Tu dire
-  'venait',     //14 Il venir
-  'lisions',    //15 Nous lire
-  'écriviez',   //16 Vous écrire
-  'buvaient',   //17 Elles boire
-  'ouvrais',    //18 Je ouvrir
-  'connaissais',//19 Tu connaître
-  'voulait',    //20 Il vouloir
-  'mettions',   //21 Nous mettre
-  'partiez',    //22 Vous partir
-  'couraient',  //23 Ils courir
-  'envoyais',   //24 Je envoyer
-  'recevais',   //25 Tu recevoir
-  'fallait',    //26 Il falloir (impersonal)
-  'vivions',    //27 Nous vivre
-  'teniez',     //28 Vous tenir
-  'mouraient',  //29 Elles mourir
-  'riais',      //30 Je rire
-  'souriais',   //31 Tu sourire
-  'croyait',    //32 Il croire
-  'offrions',   //33 Nous offrir
-  'descendiez', //34 Vous descendre
-  'naissaient', //35 Elles naître
-  'battais',    //36 Je battre
-  'résolvais',  //37 Tu résoudre
-  'apprenait',  //38 Il apprendre
-  'coudions',   //39 Nous coudre
-  'plaisiez',   //40 Vous plaire
-  'craignaient',//41 Ils craindre
-  'allais'      //42 Je aller
+<script>
+// ==================== CONFIGURACIÓN ====================
+const questions = [
+  // --- Preguntas 1-30 ---
+  {q:"Yo (être) ... à l'école", a:"étais"},
+  {q:"Tú (avoir) ... un chien", a:"avais"},
+  {q:"Él (aller) ... au marché", a:"allait"},
+  {q:"Nosotros (finir) ... nos devoirs", a:"finissions"},
+  {q:"Vosotros (parler) ... souvent", a:"parliez"},
+  {q:"Ellos (prendre) ... le bus", a:"prenaient"},
+  {q:"Yo (faire) ... du sport", a:"faisais"},
+  {q:"Tú (venir) ... chez moi", a:"venais"},
+  {q:"Él (manger) ... des fruits", a:"mangeait"},
+  {q:"Nosotros (lire) ... un livre", a:"lisions"},
+  // 11-20
+  {q:"Vosotros (écrire) ... des lettres", a:"écriviez"},
+  {q:"Ellos (dire) ... la vérité", a:"disaient"},
+  {q:"Yo (pouvoir) ... chanter", a:"pouvais"},
+  {q:"Tú (vouloir) ... aider", a:"voulais"},
+  {q:"Él (savoir) ... tout", a:"savait"},
+  {q:"Nosotros (connaître) ... la ville", a:"connaissions"},
+  {q:"Vosotros (travailler) ... tard", a:"travailliez"},
+  {q:"Ellos (jouer) ... au foot", a:"jouaient"},
+  {q:"Yo (boire) ... du lait", a:"buvais"},
+  {q:"Tú (courir) ... vite", a:"courais"},
+  // 21-30
+  {q:"Él (choisir) ... un cadeau", a:"choisissait"},
+  {q:"Nosotros (ouvrir) ... la porte", a:"ouvrions"},
+  {q:"Vosotros (mettre) ... la table", a:"mettiez"},
+  {q:"Ellos (recevoir) ... des lettres", a:"recevaient"},
+  {q:"Yo (croire) ... en toi", a:"croyais"},
+  {q:"Tú (vivre) ... à Paris", a:"vivais"},
+  {q:"Él (attendre) ... le bus", a:"attendait"},
+  {q:"Nosotros (chanter) ... ensemble", a:"chantions"},
+  {q:"Vosotros (danser) ... au bal", a:"dansiez"},
+  {q:"Ellos (parvenir) ... à temps", a:"parvenaient"}
 ];
 
+const questionsPerPage = 10;
+let currentPage = parseInt(localStorage.getItem('currentPage') || '0');
+let answers = JSON.parse(localStorage.getItem('answers') || '[]');
 
-        // Función para normalizar: minusculas y quitar acentos para comparar
-        function normalize(str) {
-            if (!str) return '';
-            const map = { 'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a', 'ã': 'a', 'å': 'a', 'é': 'e', 'è': 'e', 'ë': 'e', 'ê': 'e', 'í': 'i', 'ì': 'i', 'ï': 'i', 'î': 'i', 'ó': 'o', 'ò': 'o', 'ö': 'o', 'ô': 'o', 'õ': 'o', 'ú': 'u', 'ù': 'u', 'ü': 'u', 'û': 'u', 'ç': 'c', 'œ': 'oe', 'Æ': 'ae', 'æ': 'ae', 'É': 'e' };
-            return str.trim().toLowerCase().split('').map(c => map[c] || c).join('');
-        }
+// Inicializar array answers si vacío
+if (answers.length !== questions.length) {
+  answers = Array(questions.length).fill('');
+}
 
-        // Normalizar la lista de respuestas esperadas (para comparar sin acentos)
-        const normalizedAnswers = answers.map(a => normalize(a));
+// ==================== FUNCIONES ====================
+function renderPage() {
+  const quizDiv = document.getElementById('quiz');
+  quizDiv.innerHTML = '';
+  const startIndex = currentPage * questionsPerPage;
+  const endIndex = Math.min(startIndex + questionsPerPage, questions.length);
 
-        document.getElementById('checkBtn').addEventListener('click', () => {
-            const form = document.getElementById('quizForm');
-            const data = new FormData(form);
-            let correctCount = 0;
-            let details = [];
+  for (let i=startIndex; i<endIndex; i++) {
+    const qDiv = document.createElement('div');
+    qDiv.className='question';
+    qDiv.innerHTML = `
+      <p><strong>Pregunta ${i+1}:</strong> ${questions[i].q}</p>
+      <input type="text" data-index="${i}" value="${answers[i]}">
+    `;
+    quizDiv.appendChild(qDiv);
+  }
+  saveProgress();
+}
 
-            for (let i = 1; i <= normalizedAnswers.length; i++) {
-                const user = normalize(data.get('q' + i) || '');
-                const expected = normalizedAnswers[i - 1];
-                const originalExpected = answers[i - 1];
-                const isCorrect = user === expected;
-                if (isCorrect) correctCount++;
-                details.push({ index: i, user: data.get('q' + i) || '', correct: isCorrect, expected: originalExpected });
-            }
+function saveProgress(){
+  localStorage.setItem('answers', JSON.stringify(answers));
+  localStorage.setItem('currentPage', currentPage);
+}
 
-            // Nota: escala sobre 10
-            const total = normalizedAnswers.length;
-            const score10 = (correctCount / total) * 10;
-            const roundedScore = Math.round(score10 * 10) / 10; // un decimal
+function checkScore(){
+  let correct=0;
+  let details='';
+  for (let i=0; i<questions.length; i++){
+    const user=answers[i].trim().toLowerCase();
+    const good=questions[i].a.toLowerCase();
+    if(user===good){correct++;}
+    else {
+      details+=`<p>Pregunta ${i+1}: Tu respuesta: <em>${user}</em>. Correcta: <strong>${good}</strong></p>`;
+    }
+  }
+  const nota=(correct/questions.length*10).toFixed(2);
+  document.getElementById('score').innerHTML=
+    `Aciertos: ${correct}/${questions.length} — Nota: ${nota}/10<br>${details}`;
+}
 
-            // Mensaje y color
-            const feedbackDiv = document.getElementById('feedback');
-            feedbackDiv.style.display = 'block';
-            feedbackDiv.className = 'result ' + (roundedScore >= 6 ? 'correct' : 'wrong');
-            let gradeText = '';
-            if (roundedScore >= 9) gradeText = 'Excelente';
-            else if (roundedScore >= 7) gradeText = 'Bien';
-            else if (roundedScore >= 5) gradeText = 'Suficiente';
-            else gradeText = 'Insuficiente';
+// ==================== EVENTOS ====================
+document.getElementById('quiz').addEventListener('input', (e)=>{
+  if(e.target.tagName==='INPUT'){
+    const idx=parseInt(e.target.dataset.index);
+    answers[idx]=e.target.value;
+    saveProgress();
+  }
+});
 
-            feedbackDiv.innerHTML = `Has contestado correctamente <strong>${correctCount}</strong> de <strong>${total}</strong> preguntas.<br>Nota sobre 10: <strong>${roundedScore}</strong> — <em>${gradeText}</em>.`;
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if((currentPage+1)*questionsPerPage<questions.length){
+    currentPage++;
+    renderPage();
+  }
+});
 
-            // Mostrar detalle por pregunta
-            const answerList = document.getElementById('answerList');
-            answerList.style.display = 'block';
-            answerList.innerHTML = '<h3>Detalle por pregunta</h3>';
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  if(currentPage>0){
+    currentPage--;
+    renderPage();
+  }
+});
 
-            details.forEach(d => {
-                const div = document.createElement('div');
-                div.className = 'question ' + (d.correct ? 'correct' : 'wrong');
-                div.innerHTML = `<strong>${d.index}.</strong> Tu respuesta: <em>${d.user || '(vacío)'}</em> — ${d.correct ? '<strong>Correcto</strong>' : `Incorrecto (respuesta: <strong>${d.expected}</strong>)`}`;
-                answerList.appendChild(div);
-            });
+document.getElementById('checkBtn').addEventListener('click', checkScore);
 
-            // Sugerir botón para mostrar todas respuestas completas
-        });
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  if(confirm("¿Seguro que deseas reiniciar la práctica?")){
+    localStorage.removeItem('answers');
+    localStorage.removeItem('currentPage');
+    answers=Array(questions.length).fill('');
+    currentPage=0;
+    renderPage();
+    document.getElementById('score').innerHTML='';
+  }
+});
 
-        document.getElementById('showAnswers').addEventListener('click', () => {
-            const answerList = document.getElementById('answerList');
-            answerList.style.display = 'block';
-            answerList.innerHTML = '<h3>Respuestas correctas (imparfait)</h3>';
-            const ol = document.createElement('ol');
-            answers.forEach(a => {
-                const li = document.createElement('li');
-                li.textContent = a;
-                ol.appendChild(li);
-            });
-            answerList.appendChild(ol);
-            document.getElementById('feedback').style.display = 'none';
-        });
+// ==================== INICIO ====================
+renderPage();
 
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            document.getElementById('quizForm').reset();
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('answerList').style.display = 'none';
-        });
-    </script>
+</script>
 </body>
-
 </html>
