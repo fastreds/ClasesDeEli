@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Práctica: Imperfecto (Imparfait) - Francés</title>
+  <style>
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; max-width:900px;margin:20px auto;padding:20px;background:#f7fbff;color:#0b2135}
+    h1{font-size:1.6rem;margin-bottom:0.2rem}
+    p.lead{margin-top:0;color:#234}
+    .card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(10,30,60,0.06);margin:16px 0}
+    .question{margin:12px 0}
+    label{display:block;margin-bottom:6px}
+    input[type="text"]{padding:8px 10px;border-radius:8px;border:1px solid #cfe3ff;width:100%;box-sizing:border-box}
+    .controls{display:flex;gap:10px;flex-wrap:wrap}
+    button{background:#0b66ff;color:white;border:none;padding:10px 14px;border-radius:10px;cursor:pointer}
+    button.secondary{background:#e6f0ff;color:#0b66ff}
+    .result{padding:12px;margin-top:12px;border-radius:10px}
+    .correct{background:#e6ffef;border:1px solid #7ce3a6}
+    .wrong{background:#fff1f0;border:1px solid #ffa8a8}
+    .answers{margin-top:12px}
+    .small{font-size:0.9rem;color:#345}
+  </style>
+</head>
+<body>
+  <h1>Práctica: imperfecto (imparfait) — francés</h1>
+  <p class="lead">Conjuga cada verbo en <strong>imparfait</strong> según el pronombre entre paréntesis. Escribe la forma sin el pronombre (por ejemplo: <em>finissais</em>, <em>allions</em>). Al finalizar, presiona "Corregir" para ver las respuestas y tu nota sobre 10.</p>
+
+  <div class="card" id="quiz">
+    <form id="quizForm">
+
+      <ol>
+        <li class="question">
+          <label>1. Je (finir)</label>
+          <input type="text" name="q1" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>2. Tu (être)</label>
+          <input type="text" name="q2" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>3. Il/Elle (avoir)</label>
+          <input type="text" name="q3" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>4. Nous (parler)</label>
+          <input type="text" name="q4" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>5. Vous (aller)</label>
+          <input type="text" name="q5" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>6. Ils/Elles (vendre)</label>
+          <input type="text" name="q6" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>7. Nous (faire)</label>
+          <input type="text" name="q7" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>8. Je (prendre)</label>
+          <input type="text" name="q8" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>9. Elle (pouvoir)</label>
+          <input type="text" name="q9" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>10. Vous (savoir)</label>
+          <input type="text" name="q10" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>11. Nous (voir)</label>
+          <input type="text" name="q11" autocomplete="off">
+        </li>
+
+        <li class="question">
+          <label>12. Ils (sortir)</label>
+          <input type="text" name="q12" autocomplete="off">
+        </li>
+      </ol>
+
+      <div class="controls">
+        <button type="button" id="checkBtn">Corregir</button>
+        <button type="button" id="showAnswers" class="secondary">Mostrar respuestas</button>
+        <button type="button" id="resetBtn" class="secondary">Borrar</button>
+      </div>
+
+    </form>
+
+    <div id="feedback" class="result" style="display:none"></div>
+
+    <div id="answerList" class="answers" style="display:none"></div>
+  </div>
+
+  <script>
+    // Respuestas esperadas (formas de imparfait sin pronombre). Normalizadas sin acentos y en minúsculas.
+    const answers = [
+      'finissais', // Je (finir)
+      'étais',     // Tu (être) -> tu étais
+      'avait',     // Il/Elle (avoir)
+      'parlions',  // Nous (parler)
+      'alliez',    // Vous (aller)
+      'vendaient', // Ils/Elles (vendre)
+      'faisions',  // Nous (faire)
+      'prenais',   // Je (prendre)
+      'pouvait',   // Elle (pouvoir)
+      'saviez',    // Vous (savoir)
+      'voyions',   // Nous (voir)
+      'sortaient'  // Ils (sortir)
+    ];
+
+    // Función para normalizar: minusculas y quitar acentos para comparar
+    function normalize(str){
+      if(!str) return '';
+      const map = {'á':'a','à':'a','ä':'a','â':'a','ã':'a','å':'a','é':'e','è':'e','ë':'e','ê':'e','í':'i','ì':'i','ï':'i','î':'i','ó':'o','ò':'o','ö':'o','ô':'o','õ':'o','ú':'u','ù':'u','ü':'u','û':'u','ç':'c','œ':'oe','Æ':'ae','æ':'ae','É':'e'};
+      return str.trim().toLowerCase().split('').map(c => map[c] || c).join('');
+    }
+
+    // Normalizar la lista de respuestas esperadas (para comparar sin acentos)
+    const normalizedAnswers = answers.map(a => normalize(a));
+
+    document.getElementById('checkBtn').addEventListener('click', ()=>{
+      const form = document.getElementById('quizForm');
+      const data = new FormData(form);
+      let correctCount = 0;
+      let details = [];
+
+      for(let i=1;i<=normalizedAnswers.length;i++){
+        const user = normalize(data.get('q'+i) || '');
+        const expected = normalizedAnswers[i-1];
+        const originalExpected = answers[i-1];
+        const isCorrect = user === expected;
+        if(isCorrect) correctCount++;
+        details.push({index:i, user: data.get('q'+i) || '', correct: isCorrect, expected: originalExpected});
+      }
+
+      // Nota: escala sobre 10
+      const total = normalizedAnswers.length;
+      const score10 = (correctCount / total) * 10;
+      const roundedScore = Math.round(score10 * 10) / 10; // un decimal
+
+      // Mensaje y color
+      const feedbackDiv = document.getElementById('feedback');
+      feedbackDiv.style.display = 'block';
+      feedbackDiv.className = 'result ' + (roundedScore >= 6 ? 'correct' : 'wrong');
+      let gradeText = '';
+      if(roundedScore >= 9) gradeText = 'Excelente';
+      else if(roundedScore >= 7) gradeText = 'Bien';
+      else if(roundedScore >= 5) gradeText = 'Suficiente';
+      else gradeText = 'Insuficiente';
+
+      feedbackDiv.innerHTML = `Has contestado correctamente <strong>${correctCount}</strong> de <strong>${total}</strong> preguntas.<br>Nota sobre 10: <strong>${roundedScore}</strong> — <em>${gradeText}</em>.`;
+
+      // Mostrar detalle por pregunta
+      const answerList = document.getElementById('answerList');
+      answerList.style.display = 'block';
+      answerList.innerHTML = '<h3>Detalle por pregunta</h3>';
+
+      details.forEach(d =>{
+        const div = document.createElement('div');
+        div.className = 'question ' + (d.correct ? 'correct' : 'wrong');
+        div.innerHTML = `<strong>${d.index}.</strong> Tu respuesta: <em>${d.user || '(vacío)'}</em> — ${d.correct ? '<strong>Correcto</strong>' : `Incorrecto (respuesta: <strong>${d.expected}</strong>)`}`;
+        answerList.appendChild(div);
+      });
+
+      // Sugerir botón para mostrar todas respuestas completas
+    });
+
+    document.getElementById('showAnswers').addEventListener('click', ()=>{
+      const answerList = document.getElementById('answerList');
+      answerList.style.display = 'block';
+      answerList.innerHTML = '<h3>Respuestas correctas (imparfait)</h3>';
+      const ol = document.createElement('ol');
+      answers.forEach(a =>{
+        const li = document.createElement('li');
+        li.textContent = a;
+        ol.appendChild(li);
+      });
+      answerList.appendChild(ol);
+      document.getElementById('feedback').style.display = 'none';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      document.getElementById('quizForm').reset();
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('answerList').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
